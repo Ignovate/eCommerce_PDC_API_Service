@@ -1,0 +1,80 @@
+
+logging:
+    level:
+        ROOT: INFO
+        com.lectrefy: INFO
+
+spring:
+    application:
+        name: gaia-ecom-service
+    profiles:
+        active: dev
+        include:
+    jackson:
+        serialization.indent_output: true
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mysql://167.99.153.79:3306/igecom?useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: Achu2106
+        hikari:
+            auto-commit: false
+            data-source-properties:
+                cachePrepStmts: true
+                prepStmtCacheSize: 250
+                prepStmtCacheSqlLimit: 2048
+                useServerPrepStmts: true
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
+        show-sql: true
+        properties:
+            hibernate.id.new_generator_mappings: true
+            hibernate.connection.provider_disables_autocommit: true
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: false
+            
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: gmailID
+        password: password
+        properties:
+            mail.smtp.starttls.enable: true
+            mail.smtp.starttls.required: true
+            mail.smtp.auth: true
+            mail.smtp.connectiontimeout: 5000
+            mail.smtp.timeout: 5000
+            mail.smtp.writetimeout: 5000
+            
+
+
+server:
+    port: 8081
+    servlet:
+        context-path: /${spring.application.name}
+
+sms:
+  sender:
+    id: LECTRE
+  url: http://2factor.in/API/V1/b37b6fb1-cba9-11e8-a895-0200cd936042/ADDON_SERVICES/SEND/TSMS
+  register:
+    template: Sign Up Success
+  reset:
+    template: Changed Password
+  otp:
+    template: Sign Up
+email:
+  otp:
+    text: your otp is
+  register:
+    text: your account created in lectrefy
+    subject: Account created
+  update:
+    text: your account updated in lectrefy
+    subject: Account updated
+
+authman:
+  url : http://localhost:8082/gaia-ecom-authman/api/authman/v1.0/validate
+  disable: /**
