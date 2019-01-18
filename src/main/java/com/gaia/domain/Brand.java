@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.gaia.common.Constants;
+
 @Entity
 @Table(name = "brand")
 @DynamicUpdate(true)
@@ -25,6 +27,9 @@ public class Brand implements Serializable {
 
 	@Column(name = "brand_name")
 	private String name;
+
+	@Column(name = "image")
+	private String image;
 
 	@Column(name = "status")
 	private Long status;
@@ -45,6 +50,14 @@ public class Brand implements Serializable {
 		this.name = name;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public Long getStatus() {
 		return status;
 	}
@@ -53,4 +66,8 @@ public class Brand implements Serializable {
 		this.status = status;
 	}
 
+	public String getImageUrl() {
+		return Constants.APP_PATH + image;
+	}
+	
 }

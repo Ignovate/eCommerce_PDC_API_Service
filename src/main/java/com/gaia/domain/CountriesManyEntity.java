@@ -33,7 +33,7 @@ public class CountriesManyEntity implements Serializable {
 	private String name;
 	
 	
-	@OneToMany(mappedBy="countryID", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="countryId", cascade=CascadeType.ALL)
 	private List<CountriesRegionEntity> countriesRegionEntity;
 	
 	public List<CountriesRegionEntity> getCountriesRegionEntity() {

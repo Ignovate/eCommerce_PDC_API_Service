@@ -4,6 +4,7 @@ public interface Constants {
 	
 	public static final String APP_PATH = "http://dietinsurance.com:8080/";
 	public static final String SUCCESS = "SUCCESS";
+	public static final String FAILED = "FAILED";
 	public static final String SUCCESS_CODE = "00";
 
 	public static final String VALIDATED = "0";

@@ -19,6 +19,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gaia.common.Constants;
 
 @Entity
 @Table(name = "sales_order_items")
@@ -55,6 +56,12 @@ public class SalesOrderItems implements Serializable {
 
 	@Column(name = "product_type")
 	private String productType;
+
+	@Column(name = "measurement")
+	private String measurement;
+
+	@Column(name = "image")
+	private String image;
 
 	@Type(type = "org.hibernate.type.LocalDateTimeType")
 	@Column(name = "created_at")
@@ -163,6 +170,26 @@ public class SalesOrderItems implements Serializable {
 
 	public void setSaleOrder(SalesOrder saleOrder) {
 		this.saleOrder = saleOrder;
+	}
+
+	public String getMeasurement() {
+		return measurement;
+	}
+
+	public void setMeasurement(String measurement) {
+		this.measurement = measurement;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getImageUrl() {
+		return Constants.APP_PATH + image;
 	}
 
 	@PrePersist

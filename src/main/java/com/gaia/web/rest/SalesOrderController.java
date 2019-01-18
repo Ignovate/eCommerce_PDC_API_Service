@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gaia.common.GaiaException;
 import com.gaia.domain.SalesOrder;
+import com.gaia.service.CartService;
 import com.gaia.service.SalesOrderService;
 import com.gaia.web.rest.vm.ResponseVm;
 
@@ -26,6 +27,8 @@ public class SalesOrderController {
 
 	@Autowired
 	private SalesOrderService salesOrderService;
+	@Autowired
+	private CartService cartService;
 	@Autowired
 	private DozerBeanMapper dozerBeanMapper;
 
@@ -42,7 +45,7 @@ public class SalesOrderController {
 	@GetMapping("salesorder/add")
 	public ResponseEntity<ResponseVm> saleOrder(@RequestParam(name = "quoteId", required = true) Long quoteId)
 			throws GaiaException {
-		String message = salesOrderService.saleOrder(quoteId);
+		String message = cartService.saleOrder(quoteId);
 		ResponseVm res = ResponseVm.getSuccessVm();
 		if (!"Success".equals(message))
 			res.setMessage(message);

@@ -66,6 +66,8 @@ public class CustomersEntity implements Serializable {
 
 	@Transient
 	private Long quoteId;
+	@Transient
+	private Long cartItemCount;
 
 	public Long getCustomerId() {
 		return customerId;
@@ -163,15 +165,23 @@ public class CustomersEntity implements Serializable {
 		this.quoteId = quoteId;
 	}
 
+	public Long getCartItemCount() {
+		return cartItemCount;
+	}
+
+	public void setCartItemCount(Long cartItemCount) {
+		this.cartItemCount = cartItemCount;
+	}
+
 	@PrePersist
 	public void prePersist() {
 		setCreatedAt(Optional.ofNullable(this.createdAt).map(m -> m).orElse(LocalDateTime.now()));
 		setUpdatedAt(Optional.ofNullable(this.updatedAt).map(m -> m).orElse(LocalDateTime.now()));
 	}
-	
+
 	@PreUpdate
-    public void preUpdate() {
+	public void preUpdate() {
 		setUpdatedAt(LocalDateTime.now());
-    }
+	}
 
 }

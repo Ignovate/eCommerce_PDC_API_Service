@@ -1,5 +1,6 @@
 package com.gaia.service;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -20,16 +21,41 @@ public class SmsAlertService {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(SmsAlertService.class);
 
-	@Value("${sms.sender.id:LECTRE}")
-	private String senderId;
-
-	@Value("${sms.url:http://2factor.in/API/V1/b37b6fb1-cba9-11e8-a895-0200cd936042/ADDON_SERVICES/SEND/TSMS}")
+	@Value("${sms.url}")
 	private String url;
 
-	@Value("${sms.otp.url:https://2factor.in/API/V1/b37b6fb1-cba9-11e8-a895-0200cd936042/SMS/}")
-	private String otpUrl;
+	@Value("${sms.sender.id}")
+	private String senderId;
 
-	
+	@Value("${sms.sender.username}")
+	private String username;
+
+	@Value("${sms.sender.password}")
+	private String password;
+
+	public void sendSms(String mobile, String message) {
+		// Map<String, String> requestParams = new LinkedHashMap<String,
+		// String>();
+		// requestParams.put("username", username);
+		// requestParams.put("password", password);
+		// requestParams.put("to", (mobile != null && mobile.length() == 10) ?
+		// "91" + mobile : mobile);
+		// requestParams.put("from", senderId);
+		// requestParams.put("text", message);
+		String param = "?username=" + username + "&password=" + password + "&to="
+				+ ((mobile != null && mobile.length() == 10) ? "91" + mobile : mobile) + "&from=" + senderId + "&text="
+				+ message;
+		try {
+			String result = new RestTemplate().getForObject(url + param, String.class);
+			LOGGER.info("SMS to:{}, result:{}", mobile, result);
+		} catch (HttpClientErrorException e) {
+			LOGGER.info("SMS to:{}, exception:{}, response:{}", mobile, e.getMessage(),
+					e.getResponseBodyAsString());
+		} catch (Exception e) {
+			LOGGER.info("SMS to:{}, exception:{}", mobile, e.getMessage());
+		}
+	}
+
 	public void sendSms(String mobile, String template, Map<String, String> formData) {
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -39,32 +65,30 @@ public class SmsAlertService {
 		multipartRequest.add("TemplateName", template);
 		multipartRequest.add("To", mobile);
 		multipartRequest.add("From", senderId);
-		LOGGER.info("multipartRequest {}",multipartRequest);
+		LOGGER.info("multipartRequest {}", multipartRequest);
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(multipartRequest, header);
 		try {
 			String result = new RestTemplate().postForObject(url, requestEntity, String.class);
 			LOGGER.info("result {}", result);
 		} catch (HttpClientErrorException e) {
 			LOGGER.info("message {} response {}", e.getMessage(), e.getResponseBodyAsString());
-		}catch(Exception e) {
-			LOGGER.error("Unable to send sms error ",e);
+		} catch (Exception e) {
+			LOGGER.error("Unable to send sms error ", e);
 		}
 	}
-	
+
 	public void sendSmsOTP(String mobile, int otp) {
-		
-		String url=otpUrl+"/"+mobile+"/"+otp;
+
+		String url = this.url + "/" + mobile + "/" + otp;
 		try {
-			LOGGER.info("OTP URL :{}",url);
+			LOGGER.info("OTP URL :{}", url);
 			String result = new RestTemplate().getForObject(url, String.class);
 			LOGGER.info("result {}", result);
 		} catch (HttpClientErrorException e) {
 			LOGGER.info("message {} response {}", e.getMessage(), e.getResponseBodyAsString());
-		}catch(Exception e) {
-			LOGGER.error("Unable to send sms error ",e);
+		} catch (Exception e) {
+			LOGGER.error("Unable to send sms error ", e);
 		}
 	}
-	
-	
-	
+
 }

@@ -1,5 +1,6 @@
 package com.gaia.web.rest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.dozer.DozerBeanMapper;
@@ -76,6 +77,17 @@ public class CustomerWishListController {
 			return ResponseEntity.notFound().build();
 		custServ.addCustWishList(custtDetails);
 		return new ResponseEntity<ResponseVm>(ResponseVm.getSuccessVm(), HttpStatus.OK);
+	}
+
+	@GetMapping("customerwishlists/{customerId}")
+	public ResponseEntity<List<CustomerWishListEntity>> getCustWishLists(@PathVariable Long customerId)
+			throws GaiaException {
+
+		List<CustomerWishListEntity> wishLists = custServ.getCustWishLists(customerId);
+		if (wishLists == null)
+			throw new GaiaException(ErrorCodes.CODE_NO_DATA, ErrorCodes.MSG_NO_DATA);
+
+		return new ResponseEntity<List<CustomerWishListEntity>>(wishLists, HttpStatus.OK);
 	}
 
 }

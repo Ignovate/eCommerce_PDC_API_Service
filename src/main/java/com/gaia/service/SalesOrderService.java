@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,6 +26,7 @@ import com.gaia.domain.SalesOrderItems;
 import com.gaia.domain.SalesOrderPayment;
 import com.gaia.domain.SalesQuote;
 import com.gaia.domain.SalesQuoteItems;
+import com.gaia.domain.SalesQuotePayment;
 import com.gaia.repository.SalesOrderRepo;
 import com.gaia.repository.SalesRepo;
 
@@ -57,6 +60,7 @@ public class SalesOrderService {
 				List<Predicate> predicate = new ArrayList<Predicate>();
 
 				predicate.add(criteriaBuilder.equal(root.get("customerId"), customerId));
+				query.orderBy(criteriaBuilder.desc(root.get("createdDate")));
 
 				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
 			}
@@ -105,50 +109,4 @@ public class SalesOrderService {
 		return salesRepo.save(salesEntity);
 	}
 
-	public String saleOrder(Long quoteId) {
-		SalesQuote quoteOrder = salesQuoteService.getSalesQuote(quoteId);
-		if (quoteOrder != null) {
-			SalesOrder saleOrder = dozerBeanMapper.map(quoteOrder, SalesOrder.class);
-			saleOrder.setId(null);
-			saleOrder.setSaleOrderItems(null);
-			saleOrder.setSaleAddress(null);
-			saleOrder.setSalePayment(null);
-			saleOrder.setDisplayId("1");
-			addSalesOrder(saleOrder);
-
-			// Add items
-			List<SalesOrderItems> list = new ArrayList<SalesOrderItems>();
-			for (SalesQuoteItems item : quoteOrder.getQuoteOrderItems()) {
-				SalesOrderItems saleOrderItem = dozerBeanMapper.map(item, SalesOrderItems.class);
-				saleOrderItem.setId(null);
-				saleOrderItem.setOrderId(saleOrder.getId());
-				list.add(saleOrderItem);
-			}
-			saleOrder.setSaleOrderItems(list);
-			// Add address
-			if (quoteOrder.getQuoteAddress() != null) {
-				SalesOrderAddress saleOrderAddress = dozerBeanMapper.map(quoteOrder.getQuoteAddress(),
-						SalesOrderAddress.class);
-				saleOrderAddress.setId(null);
-				saleOrderAddress.setOrderId(saleOrder.getId());
-				saleOrder.setSaleAddress(saleOrderAddress);
-			}
-			// Add payment
-			if (quoteOrder.getQuotePayment() != null) {
-				SalesOrderPayment saleOrderPayment = dozerBeanMapper.map(quoteOrder.getQuotePayment(),
-						SalesOrderPayment.class);
-				saleOrderPayment.setId(null);
-				saleOrderPayment.setOrderId(saleOrder.getId());
-				saleOrder.setSalePayment(saleOrderPayment);
-			}
-
-			addSalesOrder(saleOrder);
-			quoteOrder.setActive(false);
-			salesQuoteService.addSalesQuote(quoteOrder);
-		} else {
-			return "Cart not found";
-		}
-
-		return "Success";
-	}
 }

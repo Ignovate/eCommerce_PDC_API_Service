@@ -50,8 +50,8 @@ public class SalesQuoteController {
 	}
 
 	@GetMapping("salesquote/{id}")
-	public ResponseEntity<List<SalesQuote>> getSalesOrder(@PathVariable long id) throws GaiaException {
-		return new ResponseEntity<List<SalesQuote>>(salesServ.getSalesQuotes(id), HttpStatus.OK);
+	public ResponseEntity<SalesQuote> getSalesOrder(@PathVariable long id) throws GaiaException {
+		return new ResponseEntity<SalesQuote>(salesServ.getSalesQuote(id), HttpStatus.OK);
 	}
 
 	@GetMapping("salesquote")

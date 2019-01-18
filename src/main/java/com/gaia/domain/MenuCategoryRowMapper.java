@@ -18,6 +18,8 @@ public class MenuCategoryRowMapper implements RowMapper<MenuCategoryResponse>{
 		menu.setLevel(rs.getLong("level"));
 		menu.setProductCount(rs.getLong("product_count"));
 		menu.setParentId(rs.getLong("is_parent"));
+		menu.setImage(rs.getString("image"));
+		menu.setThumbnail(rs.getString("thumbnail"));
 		return menu;
 	}
 

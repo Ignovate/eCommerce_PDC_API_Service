@@ -39,7 +39,7 @@ public class OtpService {
 		int otp = ThreadLocalRandom.current().nextInt(100000, 999999);
 		cacheManager.getCache("otp").put(otpReq.getRefNo(), otp);
 		smsAlertService.sendSmsOTP(otpReq.getPhone(), otp);
-		mailAlertService.sendEmail(otpReq.getEmail(),otpEmailText+otp,"One Time Passowrd");
+		mailAlertService.sendEmail(otpReq.getEmail(), "One Time Passowrd", otpEmailText + otp);
 		return ResponseVm.getSuccessVm();
 	}
 	

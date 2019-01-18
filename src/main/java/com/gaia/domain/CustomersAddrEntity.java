@@ -27,7 +27,7 @@ public class CustomersAddrEntity implements Serializable {
 	private Long id;
 
 	@Column(name = "customer_id")
-	private Long custId;
+	private Long customerId;
 
 	@Column(name = "firstname")
 	private String firstname;
@@ -58,12 +58,12 @@ public class CustomersAddrEntity implements Serializable {
 		this.id = id;
 	}
 
-	public Long getCustId() {
-		return custId;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustId(Long custId) {
-		this.custId = custId;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
 	public String getFirstname() {

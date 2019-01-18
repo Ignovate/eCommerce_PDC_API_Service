@@ -37,10 +37,17 @@ public class UserService {
 	private CustomersService customersService;
 	@Autowired
 	private SalesQuoteService salesQuoteService;
+	@Autowired
+	SmsAlertService smsService;
+	@Autowired
+	MailAlertService mailService;
 
 	public LoginRespVm signin(LoginReqVm loginReq) {
 		LoginRespVm loginRes = new LoginRespVm();
-		CustomersEntity customer = customersService.getCustomer(loginReq.getEmail(), loginReq.getPassword());
+		CustomersEntity customer = customersService.getCustomer(loginReq.getEmail(), loginReq.getPassword(), "email");
+		if (customer == null)
+			customer = customersService.getCustomer(loginReq.getUsername(), loginReq.getPassword(), "username");
+
 		if (customer == null) {
 			loginRes.setMessage("Invalid Email/Password");
 		} else if (!customer.isActive()) {
@@ -50,8 +57,11 @@ public class UserService {
 			map.put("customerId", customer.getCustomerId());
 			map.put("active", true);
 			SalesQuote salesQuote = salesQuoteService.getSalesQuote(map);
-			if (salesQuote != null)
+			if (salesQuote != null) {
 				customer.setQuoteId(salesQuote.getId());
+				customer.setCartItemCount(salesQuote.getTotalItems());
+			}
+			customersService.addCustomers(customer);
 
 			loginRes.setCustomer(customer);
 		}
@@ -77,6 +87,8 @@ public class UserService {
 
 		customersService.addCustomers(customer);
 		loginRes.setCustomer(customer);
+		mailService.sendEmail(customer.getEmail(), "Registration Success", "You are successfully registered");
+		smsService.sendSms(customer.getMobile(), "You are successfully registered");
 
 		return loginRes;
 	}

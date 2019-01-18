@@ -7,7 +7,6 @@ public class CustomerAddrResponse {
 	private String firstname;
 	private String lastname;
 	private String streetname;
-
 	private Long countryId;
 	private Long regionId;
 	private Long areaId;

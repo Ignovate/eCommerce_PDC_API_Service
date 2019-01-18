@@ -17,12 +17,15 @@ public class ProductRowMapper implements RowMapper<ProductVm> {
 			resp.setCategoryId(rs.getLong("category_id"));
 		} catch (SQLException e) {
 		}
+		try {
+			resp.setBrandId(rs.getLong("brand_id"));
+		} catch (SQLException e) {
+		}
 		resp.setProductId(rs.getLong("id"));
 		resp.setSku(rs.getString("sku"));
 		resp.setName(rs.getString("name"));
 		resp.setPrice(rs.getBigDecimal("price"));
 		resp.setSpecialPrice(rs.getBigDecimal("special_price"));
-
 		Timestamp timestamp = rs.getTimestamp("special_price_start_date");
 		if (timestamp != null)
 			resp.setSplPriceStartDate(timestamp.toLocalDateTime());

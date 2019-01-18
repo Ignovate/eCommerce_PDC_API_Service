@@ -40,4 +40,9 @@ public class ResponseVm {
 		return new ResponseVm(e.getCode(), e.getMessage());
 	}
 
+	public static ResponseVm getFailureVm(String message)
+	{
+		return new ResponseVm(message, Constants.FAILED);
+	}
+	
 }

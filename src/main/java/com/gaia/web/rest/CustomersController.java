@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gaia.common.ErrorCodes;
 import com.gaia.common.GaiaException;
+import com.gaia.domain.CustomersAddrEntity;
 import com.gaia.domain.CustomersEntity;
 import com.gaia.service.CustomersService;
 import com.gaia.web.rest.vm.ResponseVm;
@@ -53,8 +54,7 @@ public class CustomersController {
 	public ResponseEntity<PagedResources<Resource<CustomersEntity>>> getCustomers(
 			PagedResourcesAssembler<CustomersEntity> assembler, @RequestParam Map<String, String> map,
 			@RequestParam(name = "id", required = false) Long id,
-			@RequestParam(name = "active", required = false) boolean isActive, Pageable pageable)
-			throws GaiaException {
+			@RequestParam(name = "active", required = false) boolean isActive, Pageable pageable) throws GaiaException {
 		boolean isPresent = false;
 		if (map.containsKey("id"))
 			map.remove("id");
@@ -80,13 +80,11 @@ public class CustomersController {
 	@PutMapping("customers/{id}")
 	public ResponseEntity<ResponseVm> updateCustomers(@RequestBody CustomersEntity custDetails, @PathVariable long id)
 			throws GaiaException {
-		CustomersEntity oldCustDetails = custServ.getCustomers(id);
-		if (oldCustDetails == null)
+		ResponseVm response = custServ.updateCustomer(id, custDetails);
+		if (response == null)
 			return ResponseEntity.notFound().build();
-		custDetails.setCreatedAt(oldCustDetails.getCreatedAt());
-		custDetails.setUpdatedAt(LocalDateTime.now());
-		custServ.addCustomers(custDetails);
-		return new ResponseEntity<ResponseVm>(ResponseVm.getSuccessVm(), HttpStatus.OK);
+
+		return new ResponseEntity<ResponseVm>(response, HttpStatus.OK);
 	}
 
 }

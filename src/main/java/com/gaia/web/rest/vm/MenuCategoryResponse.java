@@ -11,6 +11,8 @@ public class MenuCategoryResponse {
 	private Long level;
 	private Long productCount;
 	private Long parentId;
+	private String image;
+	private String thumbnail;
 
 	private List<MenuCategoryResponse> subCategories;
 
@@ -69,6 +71,22 @@ public class MenuCategoryResponse {
 
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 
 	public List<MenuCategoryResponse> getSubCategories() {

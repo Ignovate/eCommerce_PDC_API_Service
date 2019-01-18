@@ -1,6 +1,7 @@
 package com.gaia.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.gaia.domain.CustomersAddrEntity;
 import com.gaia.domain.CustomersEntity;
 import com.gaia.repository.CustomersAddrRepo;
 import com.gaia.repository.CustomersRepo;
+import com.gaia.web.rest.vm.ResponseVm;
 
 @Service
 public class CustomersService {
@@ -37,13 +39,13 @@ public class CustomersService {
 		return repo.findById(id).orElse(null);
 	}
 
-	public CustomersEntity getCustomer(String email, String password) {
+	public CustomersEntity getCustomer(String emailOrUsername, String password, String field) {
 		Specification<CustomersEntity> spec = new Specification<CustomersEntity>() {
 			@Override
 			public Predicate toPredicate(Root<CustomersEntity> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicate = new ArrayList<Predicate>();
-				predicate.add(criteriaBuilder.equal(root.get("email"), email));
+				predicate.add(criteriaBuilder.equal(root.get(field), emailOrUsername));
 				predicate.add(criteriaBuilder.equal(root.get("password"), password));
 				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
 			}
@@ -98,6 +100,44 @@ public class CustomersService {
 
 	public CustomersAddrEntity getCustomerAddress(Long addressId) {
 		return customerAddressRepo.findById(addressId).orElse(null);
+	}
+
+	public ResponseVm updateCustomer(Long id, CustomersEntity customer) {
+		CustomersEntity oldCustomer = getCustomers(id);
+		if (oldCustomer == null)
+			return null;
+
+		if (customer.getFirstName() != null)
+			oldCustomer.setFirstName(customer.getFirstName());
+		if (customer.getLastName() != null)
+			oldCustomer.setLastName(customer.getLastName());
+		if (customer.getGender() != null)
+			oldCustomer.setGender(customer.getGender());
+		if (customer.getEmail() != null && !customer.getEmail().equals(oldCustomer.getEmail())) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("email", customer.getEmail());
+			CustomersEntity cusEntity = getCustomer(map);
+			if (cusEntity != null && cusEntity.getCustomerId() != oldCustomer.getCustomerId()) {
+				return ResponseVm.getFailureVm("Email id already exists");
+			}
+			oldCustomer.setEmail(customer.getEmail());
+		}
+		if (customer.getMobile() != null)
+			oldCustomer.setMobile(customer.getMobile());
+		if (customer.getUsername() != null && !customer.getUsername().equals(oldCustomer.getUsername())) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("username", customer.getUsername());
+			CustomersEntity cusEntity = getCustomer(map);
+			if (cusEntity != null && cusEntity.getCustomerId() != oldCustomer.getCustomerId()) {
+				return ResponseVm.getFailureVm("Username already exists");
+			}
+			oldCustomer.setUsername(customer.getUsername());
+		}
+		if (customer.getPassword() != null)
+			oldCustomer.setPassword(customer.getPassword());
+
+		addCustomers(oldCustomer);
+		return ResponseVm.getSuccessVm();
 	}
 
 }

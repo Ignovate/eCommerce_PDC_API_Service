@@ -30,7 +30,7 @@ public class CountriesRegionEntity implements Serializable {
 	private String name;
 	
 	@Column(name = "country_id")
-	private Long countryID ;
+	private Long countryId;
 
 	public String getName() {
 		return name;
@@ -48,12 +48,12 @@ public class CountriesRegionEntity implements Serializable {
 		this.id = id;
 	}
 
-	public Long getCountryID() {
-		return countryID;
+	public Long getCountryId() {
+		return countryId;
 	}
 
-	public void setCountryID(Long countryID) {
-		this.countryID = countryID;
+	public void setCountryId(Long countryId) {
+		this.countryId = countryId;
 	}
 
 	

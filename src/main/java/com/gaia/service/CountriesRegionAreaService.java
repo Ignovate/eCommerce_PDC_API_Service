@@ -28,7 +28,7 @@ public class CountriesRegionAreaService {
 		return countriesRegAreaRepo.findById(id).orElse(null);
 	}
 	
-	public Page<CountriesRegionAreaEntity> getCountriesAreaRegion(Long id, Long countryID, Long regionID, String name, Pageable pageable) {
+	public Page<CountriesRegionAreaEntity> getCountriesAreaRegion(Long id, Long countryId, Long regionId, String name, Pageable pageable) {
 		Specification<CountriesRegionAreaEntity> spec = new Specification<CountriesRegionAreaEntity>() {
 
 			@Override
@@ -37,15 +37,15 @@ public class CountriesRegionAreaService {
 				List<Predicate> predicate = new ArrayList<Predicate>();
 				
 				if(id !=null) {
-					predicate.add(criteriaBuilder.equal(root.get("countryID"), countryID));
+					predicate.add(criteriaBuilder.equal(root.get("countryId"), countryId));
 				}
 				
-				if(countryID !=null) {
-					predicate.add(criteriaBuilder.equal(root.get("countryID"), countryID));
+				if(countryId !=null) {
+					predicate.add(criteriaBuilder.equal(root.get("countryId"), countryId));
 				}
 				
-				if(regionID !=null) {
-					predicate.add(criteriaBuilder.equal(root.get("regionID"), regionID));
+				if(regionId !=null) {
+					predicate.add(criteriaBuilder.equal(root.get("regionId"), regionId));
 				}
 				
 				if(StringUtils.isNullOREmpty(name)) {

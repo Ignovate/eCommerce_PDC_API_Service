@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -27,10 +28,13 @@ public class CustomerWishListEntity implements Serializable {
 	private Long id;
 
 	@Column(name = "customer_id")
-	private Long custId;
+	private Long customerId;
 
 	@Column(name = "product_id")
-	private Long prdId;
+	private Long productId;
+
+	@Transient
+	private Integer status;
 
 	public Long getId() {
 		return id;
@@ -40,19 +44,28 @@ public class CustomerWishListEntity implements Serializable {
 		this.id = id;
 	}
 
-	public Long getCustId() {
-		return custId;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustId(Long custId) {
-		this.custId = custId;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
-	public Long getPrdId() {
-		return prdId;
+	public Long getProductId() {
+		return productId;
 	}
 
-	public void setPrdId(Long prdId) {
-		this.prdId = prdId;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 }

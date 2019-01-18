@@ -47,11 +47,8 @@ public class CategoriesService {
 			@Override
 			public Predicate toPredicate(Root<CategoriesDetailsEntity> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicate = new ArrayList<Predicate>();
 
-				predicate.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
-
-				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
+				return criteriaBuilder.like(root.get("name"), "%" + name + "%");
 			}
 
 		};

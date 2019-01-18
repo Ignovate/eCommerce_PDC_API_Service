@@ -14,20 +14,20 @@ public class MailAlertService {
 
 	@Autowired
 	private JavaMailSender sender;
-	
-	private static final Logger LOGGER=LoggerFactory.getLogger(MailAlertService.class);
 
-	public void sendEmail(String toMail,String text,String subject) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailAlertService.class);
+
+	public void sendEmail(String toMail, String subject, String text) {
 		try {
-		MimeMessage message = sender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		helper.setTo(toMail);
-		helper.setText(text);
-		helper.setSubject(subject);
-		sender.send(message);
-		}catch(Exception e)
-		{
-			LOGGER.error("unable to send mail alert error",e);
+			MimeMessage message = sender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setTo(toMail);
+			helper.setSubject(subject);
+			helper.setText(text);
+			sender.send(message);
+			LOGGER.info("Mail sent to {}:" + toMail);
+		} catch (Exception e) {
+			LOGGER.error("unable to send mail:", e);
 		}
 	}
 

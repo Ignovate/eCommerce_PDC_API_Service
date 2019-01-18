@@ -4,14 +4,20 @@ logging:
         ROOT: INFO
         com.lectrefy: INFO
 
-spring:
+spring: 
+    mvc:
+        view:
+            prefix: /jsp/
+            suffix: .jsp
     application:
         name: gaia-ecom-service
     profiles:
         active: dev
         include:
     jackson:
-        serialization.indent_output: true
+        date-format: "yyyy-MM-dd HH:mm:ss"
+        serialization:
+            write_dates_as_timestamps: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://167.99.153.79:3306/igecom?useSSL=false&allowPublicKeyRetrieval=true
@@ -38,17 +44,15 @@ spring:
     mail:
         host: smtp.gmail.com
         port: 587
-        username: gmailID
-        password: password
+        username: info@ignovatesolutions.com
+        password: Achu2106
         properties:
+            mail.smtp.auth: true
             mail.smtp.starttls.enable: true
             mail.smtp.starttls.required: true
-            mail.smtp.auth: true
             mail.smtp.connectiontimeout: 5000
             mail.smtp.timeout: 5000
             mail.smtp.writetimeout: 5000
-            
-
 
 server:
     port: 8081
@@ -56,25 +60,27 @@ server:
         context-path: /${spring.application.name}
 
 sms:
-  sender:
-    id: LECTRE
-  url: http://2factor.in/API/V1/b37b6fb1-cba9-11e8-a895-0200cd936042/ADDON_SERVICES/SEND/TSMS
-  register:
-    template: Sign Up Success
-  reset:
-    template: Changed Password
-  otp:
-    template: Sign Up
+    url: http://global.myvaluefirst.com/smpp/sendsms
+    sender:
+        id: SMSALERT
+        username: demohttpt
+        password: httpdemoT
+    register:
+        template: Sign Up Success
+    reset:
+        template: Changed Password
+    otp:
+        template: Sign Up
 email:
-  otp:
-    text: your otp is
-  register:
-    text: your account created in lectrefy
-    subject: Account created
-  update:
-    text: your account updated in lectrefy
-    subject: Account updated
+    otp:
+        text: your otp is
+    register:
+        subject: Account created
+        text: your account created in lectrefy
+    update:
+        subject: Account updated
+        text: your account updated in lectrefy
 
 authman:
-  url : http://localhost:8082/gaia-ecom-authman/api/authman/v1.0/validate
-  disable: /**
+    url : http://localhost:8082/gaia-ecom-authman/api/authman/v1.0/validate
+    disable: /**

@@ -58,11 +58,7 @@ public class ProductAttrService {
 			@Override
 			public Predicate toPredicate(Root<ProductAttributes> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicate = new ArrayList<Predicate>();
-
-				predicate.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
-
-				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
+				return criteriaBuilder.like(root.get("name"), "%" + name + "%");
 			}
 
 		};

@@ -1,6 +1,5 @@
 package com.gaia.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,11 +25,7 @@ public class BrandService {
 
 			@Override
 			public Predicate toPredicate(Root<Brand> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicate = new ArrayList<Predicate>();
-
-				predicate.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
-
-				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
+				return criteriaBuilder.like(root.get("name"), "%" + name + "%");
 			}
 
 		};

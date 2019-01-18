@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.gaia.common.Constants;
+import com.gaia.domain.GenericBean;
 
-public class ProductVm {
+public class ProductVm extends GenericBean {
 
 	private Long categoryId;
+	private Long brandId;
 	private Long productId;
 	private String sku;
 	private String name;
@@ -27,6 +29,14 @@ public class ProductVm {
 
 	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
+	}
+
+	public Long getBrandId() {
+		return brandId;
+	}
+
+	public void setBrandId(Long brandId) {
+		this.brandId = brandId;
 	}
 
 	public Long getProductId() {
@@ -128,6 +138,15 @@ public class ProductVm {
 
 	public void setStockStatus(Long stockStatus) {
 		this.stockStatus = stockStatus;
+	}
+
+	public String getImagePath() {
+		return imageUrl;
+	}
+
+	@Override
+	public String getKey() {
+		return String.valueOf(getProductId());
 	}
 
 }

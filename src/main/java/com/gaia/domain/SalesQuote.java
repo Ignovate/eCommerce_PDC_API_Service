@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,10 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "sales_quote")
@@ -80,14 +84,15 @@ public class SalesQuote implements Serializable {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	@OneToMany(mappedBy = "saleQuote", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy = "saleQuote", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<SalesQuoteItems> quoteOrderItems;
 
 	@OneToOne(mappedBy = "saleQuote", fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = true)
 	private SalesQuoteAddress quoteAddress;
 
-	@OneToOne(mappedBy = "saleQuote", fetch = FetchType.EAGER)
-	private SalesQuotePayment quotePayment;
+	@JsonIgnore
+	@OneToMany(mappedBy = "saleQuote", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<SalesQuotePayment> quotePayments;
 
 	public Long getId() {
 		return id;
@@ -233,18 +238,27 @@ public class SalesQuote implements Serializable {
 		this.quoteAddress = quoteAddress;
 	}
 
-	public SalesQuotePayment getQuotePayment() {
-		return quotePayment;
+	public Set<SalesQuotePayment> getQuotePayments() {
+		return quotePayments;
 	}
 
-	public void setQuotePayment(SalesQuotePayment quotePayment) {
-		this.quotePayment = quotePayment;
+	public void setQuotePayments(Set<SalesQuotePayment> quotePayments) {
+		this.quotePayments = quotePayments;
 	}
+	
+//	public List<SalesQuotePayment> getQuotePayment() {
+//		return quotePayments.stream().filter(payment -> payment.getStatus().compareTo("PR") == 0).findAny().orElse(null);
+//	}
 
 	@PrePersist
 	public void oncreate() {
 		setCreatedAt(Optional.ofNullable(this.createdAt).map(m -> m).orElse(LocalDateTime.now()));
 		setUpdatedAt(Optional.ofNullable(this.updatedAt).map(m -> m).orElse(LocalDateTime.now()));
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		setUpdatedAt(LocalDateTime.now());
 	}
 
 }

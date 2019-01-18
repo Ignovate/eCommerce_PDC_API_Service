@@ -97,13 +97,25 @@ public class ProductController {
 	}
 
 	@GetMapping("product/filter")
-	public ResponseEntity<List<ProductVm>> filterProduct(@RequestParam(name = "gender", required = false) String gender,
+	public ResponseEntity<List<ProductVm>> filterProducts(
+			@RequestParam(name = "gender", required = false) String gender,
 			@RequestParam(name = "categoryId", required = false) Long categoryId,
 			@RequestParam(name = "brandId", required = false) Long brandId,
 			@RequestParam(name = "minPrice", required = false) Long minPrice,
 			@RequestParam(name = "maxPrice", required = false) Long maxPrice,
 			@RequestParam(name = "rating", required = false) Long rating) throws GaiaException {
 		List<ProductVm> list = productService.filterProduct(gender, categoryId, brandId, minPrice, maxPrice, rating);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+
+	@GetMapping("product/search")
+	public ResponseEntity<List<ProductVm>> getProducts(
+			@RequestParam(name = "categoryId", required = false) Long categoryId,
+			@RequestParam(name = "brandId", required = false) Long brandId,
+			@RequestParam(name = "sort", required = false) String sort,
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "pageSize", required = false) Integer pageSize) throws GaiaException {
+		List<ProductVm> list = productService.globalFilterSearch(categoryId, brandId, sort, page, pageSize);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 

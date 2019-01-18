@@ -17,7 +17,7 @@ import com.gaia.web.rest.vm.MenuCategoryResponse;
 public class MenuCategoryService {
 
 	private static final Map<Long, List<BreadCrumb>> breadcrumb = new LinkedHashMap<Long, List<BreadCrumb>>();
-	private String query = "select a.category_id, a.name, a.url_key, b.level, b.product_count, b.is_parent from categories_details a JOIN categories b on a.category_id=b.id order by b.level";
+	private String query = "select a.category_id, a.name, a.url_key, b.level, b.product_count, b.is_parent, a.image, a.thumbnail from categories_details a JOIN categories b on a.category_id=b.id order by b.level";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -48,9 +48,14 @@ public class MenuCategoryService {
 
 	private void updateMenu(MenuCategoryResponse cat, List<MenuCategoryResponse> list) {
 		for (MenuCategoryResponse menu : list) {
-			if (menu.getCategoryId() == cat.getParentId()) {
+			
+		/*	if (menu.getCategoryId() == cat.getParentId()) {
+				menu.getSubCategories().add(cat);
+			}*/
+			if(menu.getCategoryId() != null && menu.getCategoryId().compareTo(cat.getParentId()) == 0){
 				menu.getSubCategories().add(cat);
 			}
+				
 		}
 	}
 

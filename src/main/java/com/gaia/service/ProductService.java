@@ -1,6 +1,8 @@
 package com.gaia.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +21,11 @@ import org.springframework.stereotype.Service;
 import com.gaia.domain.Product;
 import com.gaia.domain.SingleProductEntity;
 import com.gaia.domain.SortProductRowMapper;
+import com.gaia.domain.mapper.GFilterProductRowMapper;
 import com.gaia.domain.mapper.ProductRowMapper;
 import com.gaia.repository.ProductRepo;
 import com.gaia.repository.SingleProductRepo;
+import com.gaia.util.Util;
 import com.gaia.web.rest.vm.ProductVm;
 import com.gaia.web.rest.vm.SortProductVm;
 
@@ -32,8 +36,11 @@ public class ProductService {
 	private ProductRepo productRepo;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	private String singleProductQuery = "SELECT p.id, p.sku, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label, pin.stock, pa.measurement, pin.stock_status FROM products p LEFT JOIN products_attributes pa ON pa.product_id = p.id LEFT JOIN products_price pp ON pp.product_id = p.id LEFT JOIN products_images pi ON pi.product_id = p.id LEFT JOIN products_inventory pin ON pin.product_id = p.id LEFT JOIN products_status ps ON ps.product_id = p.id WHERE p.id = ? AND ps.status = 1";
+	private String singleProductQuery = "SELECT cp.category_id, p.id, p.sku, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label, pin.stock, pa.measurement, pin.stock_status FROM products p LEFT JOIN products_attributes pa ON pa.product_id = p.id LEFT JOIN products_price pp ON pp.product_id = p.id LEFT JOIN products_images pi ON pi.product_id = p.id LEFT JOIN products_inventory pin ON pin.product_id = p.id LEFT JOIN products_status ps ON ps.product_id = p.id LEFT JOIN categories_products cp ON cp.category_id = p.id WHERE ps.status = 1 AND p.id = ?";
 	private String filterProductQry = "SELECT cp.category_id, p.id, p.sku, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label, pin.stock, pa.measurement, pin.stock_status FROM categories_products cp JOIN products p ON p.id = cp.product_id JOIN products_attributes pa ON pa.product_id = p.id JOIN products_price pp ON pp.product_id = p.id JOIN products_images pi ON pi.product_id = p.id JOIN products_inventory pin ON pin.product_id = p.id JOIN products_status ps ON ps.product_id = p.id JOIN brand b ON b.id = pa.brand WHERE (cp.category_id = ? AND (((pp.price > ? && pp.price < ?) OR (pp.special_price > ? && pp.special_price < ?)) OR pa.rating = ? OR pa.gender = ? OR b.id = ? )) AND ps.status = 1";
+	private String filterByProduct = "SELECT cp.category_id, p.id, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label FROM products p JOIN products_attributes pa ON pa.product_id = p.id JOIN products_price pp ON pp.product_id = p.id JOIN products_images pi ON pi.product_id = p.id JOIN products_status ps ON ps.product_id = p.id LEFT JOIN categories_products cp ON cp.product_id = p.id WHERE ps.status = 1 AND pa.name like ?";
+	private String searchByCategory = "SELECT cp.category_id, p.id, p.sku, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label, pin.stock, pa.measurement, pin.stock_status FROM categories_products cp JOIN products p ON p.id = cp.product_id JOIN products_attributes pa ON pa.product_id = p.id JOIN products_price pp ON pp.product_id = p.id JOIN products_images pi ON pi.product_id = p.id JOIN products_inventory pin ON pin.product_id = p.id JOIN products_status ps ON ps.product_id = p.id WHERE ps.status = 1 AND cp.category_id=?";
+	private String searchByBrand = "SELECT b.id AS brand_id, p.id, p.sku, pa.name, pp.price, pp.special_price, pp.special_price_start_date, pp.special_price_end_date, pi.image, pi.image_label, pin.stock, pa.measurement, pin.stock_status FROM brand b JOIN products_attributes pa ON pa.brand = b.id JOIN products p ON p.id = pa.product_id JOIN products_price pp ON pp.product_id = p.id JOIN products_images pi ON pi.product_id = p.id JOIN products_inventory pin ON pin.product_id = p.id JOIN products_status ps ON ps.product_id = p.id WHERE ps.status = 1 AND b.id=?";
 
 	// private String query = "select a.product_id,\r\n" +
 	// " b.sku,\r\n" +
@@ -129,6 +136,37 @@ public class ProductService {
 
 		List<ProductVm> response = jdbcTemplate.query(filterProductQry, params, new ProductRowMapper());
 		return response;
+	}
+
+	public List<ProductVm> globalFilterByProduct(String name) {
+		List<ProductVm> response = jdbcTemplate.query(filterByProduct, new Object[] { "%" + name + "%" },
+				new GFilterProductRowMapper());
+		return response;
+	}
+
+	public List<ProductVm> globalFilterSearch(Long categoryId, Long brandId, String sort, Integer page,
+			Integer pageSize) {
+		List<ProductVm> response = new ArrayList<ProductVm>();
+		if (categoryId != null) {
+			response = jdbcTemplate.query(searchByCategory, new Object[] { categoryId }, new ProductRowMapper());
+		} else if (brandId != null) {
+			response = jdbcTemplate.query(searchByBrand, new Object[] { brandId }, new ProductRowMapper());
+		}
+
+		if (sort != null) {
+			if ("asc".equalsIgnoreCase(sort))
+				Collections.sort(response, Comparator.comparing(ProductVm::getName));
+			else if ("desc".equalsIgnoreCase(sort))
+				Collections.sort(response, Comparator.comparing(ProductVm::getName).reversed());
+			else if ("low".equalsIgnoreCase(sort))
+				Collections.sort(response, Comparator.comparing(ProductVm::getPrice));
+			else if ("high".equalsIgnoreCase(sort))
+				Collections.sort(response, Comparator.comparing(ProductVm::getPrice).reversed());
+			else
+				Collections.sort(response, Comparator.comparing(ProductVm::getName));
+		}
+
+		return Util.getPageResult(response, page, pageSize);
 	}
 
 }

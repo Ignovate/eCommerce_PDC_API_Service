@@ -7,4 +7,5 @@ import com.gaia.domain.CountriesEntity;
 
 public interface CountriesRepo extends JpaRepository<CountriesEntity, Long>, JpaSpecificationExecutor<CountriesEntity>{
 
+	public CountriesEntity findByName(String name);
 }

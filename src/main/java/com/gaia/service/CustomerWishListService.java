@@ -25,6 +25,15 @@ public class CustomerWishListService {
 	private CustomerWishListRepo repo;
 
 	public CustomerWishListEntity addCustWishList(CustomerWishListEntity request) {
+		if (request.getStatus() != null && request.getStatus() == 1) {
+			return repo.save(request);
+		} else if (request.getStatus() != null && request.getStatus() == 0) {
+			CustomerWishListEntity wishList = getCustWishList(request.getCustomerId(), request.getProductId());
+			if (wishList != null) {
+				deleteCustWishList(wishList.getId());
+				return null;
+			}
+		}
 		return repo.save(request);
 	}
 
@@ -46,6 +55,35 @@ public class CustomerWishListService {
 
 		};
 		return repo.findAll(spec, pageable);
+
+	}
+
+	public List<CustomerWishListEntity> getCustWishLists(Long customerId) {
+		Specification<CustomerWishListEntity> spec = new Specification<CustomerWishListEntity>() {
+			@Override
+			public Predicate toPredicate(Root<CustomerWishListEntity> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				return criteriaBuilder.equal(root.get("customerId"), customerId);
+			}
+
+		};
+		return repo.findAll(spec);
+
+	}
+
+	public CustomerWishListEntity getCustWishList(Long customerId, Long productId) {
+		Specification<CustomerWishListEntity> spec = new Specification<CustomerWishListEntity>() {
+			@Override
+			public Predicate toPredicate(Root<CustomerWishListEntity> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicate = new ArrayList<Predicate>();
+				predicate.add(criteriaBuilder.equal(root.get("customerId"), customerId));
+				predicate.add(criteriaBuilder.equal(root.get("productId"), productId));
+				return criteriaBuilder.and(predicate.stream().toArray(Predicate[]::new));
+			}
+
+		};
+		return repo.findOne(spec).orElse(null);
 
 	}
 

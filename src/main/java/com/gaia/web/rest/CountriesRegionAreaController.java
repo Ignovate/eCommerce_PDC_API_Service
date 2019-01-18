@@ -35,12 +35,12 @@ public class CountriesRegionAreaController {
 	@GetMapping("countriesregionarea")
 	public ResponseEntity<PagedResources<Resource<CountriesRegionAreaEntity>>> getCountriesAreaRegion(
 			PagedResourcesAssembler<CountriesRegionAreaEntity> assembler,@RequestParam(name = "id", required = false) Long id,
-			@RequestParam(name = "countryID", required = false) Long countryID,
+			@RequestParam(name = "countryId", required = false) Long countryId,
 			@RequestParam(name = "regionID", required = false) Long regionID,
 			@RequestParam(name = "name", required = false) String name,
 			Pageable pageable) throws GaiaException {
 
-		Page<CountriesRegionAreaEntity> response = countriesRegAreaServ.getCountriesAreaRegion(id, countryID, regionID, name, pageable);
+		Page<CountriesRegionAreaEntity> response = countriesRegAreaServ.getCountriesAreaRegion(id, countryId, regionID, name, pageable);
 		if (response.getContent().isEmpty()) {
 			throw new GaiaException(ErrorCodes.CODE_NO_DATA, ErrorCodes.MSG_NO_DATA);
 		}

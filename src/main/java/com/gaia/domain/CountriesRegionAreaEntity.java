@@ -25,22 +25,22 @@ public class CountriesRegionAreaEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	@Column(name = "name")
 	private String name;
-	
-	@Column(name = "country_id")
-	private Long countryID ;
-	
-	@Column(name = "region_id")
-	private Long regionID ;
 
-	public Long getRegionID() {
-		return regionID;
+	@Column(name = "country_id")
+	private Long countryId;
+
+	@Column(name = "region_id")
+	private Long regionId;
+
+	public Long getRegionId() {
+		return regionId;
 	}
 
-	public void setRegionID(Long regionID) {
-		this.regionID = regionID;
+	public void setRegionId(Long regionId) {
+		this.regionId = regionId;
 	}
 
 	public String getName() {
@@ -59,16 +59,12 @@ public class CountriesRegionAreaEntity implements Serializable {
 		this.id = id;
 	}
 
-	public Long getCountryID() {
-		return countryID;
+	public Long getCountryId() {
+		return countryId;
 	}
 
-	public void setCountryID(Long countryID) {
-		this.countryID = countryID;
+	public void setCountryId(Long countryId) {
+		this.countryId = countryId;
 	}
-
-	
-
-	
 
 }

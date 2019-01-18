@@ -64,7 +64,7 @@ public class SalesQuoteItems implements Serializable {
 	private String measurement;
 
 	@Column(name = "image")
-	private String imageUrl;
+	private String image;
 
 	@Type(type = "org.hibernate.type.LocalDateTimeType")
 	@Column(name = "created_at")
@@ -183,12 +183,16 @@ public class SalesQuoteItems implements Serializable {
 		this.measurement = measurement;
 	}
 
-	public String getImageUrl() {
-		return Constants.APP_PATH + imageUrl;
+	public String getImage() {
+		return image;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getImageUrl() {
+		return Constants.APP_PATH + image;
 	}
 
 	@PrePersist

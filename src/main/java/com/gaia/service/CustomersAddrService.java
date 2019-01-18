@@ -27,7 +27,7 @@ public class CustomersAddrService {
 	@Autowired
 	private CustomersAddrRepo repo;
 
-	private String query = "SELECT a.`id` addressId,`customer_id` custId,`firstname`,`lastname`,`streetname`,a.`country_id` countryId,a.`region_id` regionId,a.`area_id` areaId,`postcode`,b.`name` country,c.`name` region,d.`name` areaname  FROM `customers_address` a JOIN `countries` b ON a.`country_id` = b.`id` JOIN `countries_regions` c ON c.`id` = a.`region_id` JOIN `countries_regions_areas` d ON a.`area_id` = d.`id` WHERE `customer_id` = '";
+	private String cusAddressQuery = "SELECT a.id, a.customer_id, a.firstname, a.lastname, a.streetname, a.country_id, a.region_id, a.area_id, a.postcode, c.name AS country, cr.name AS region, cra.name AS area FROM customers_address a JOIN countries c ON c.id=a.country_id JOIN countries_regions cr ON cr.id=a.region_id JOIN countries_regions_areas cra ON cra.id=a.area_id WHERE customer_id = ?";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -71,7 +71,8 @@ public class CustomersAddrService {
 	}
 
 	public List<CustomerAddrResponse> getCustomersAddr(String custId) {
-		List<CustomerAddrResponse> response = jdbcTemplate.query(query + custId + "'", new CustomerAddrRowMapper());
+		List<CustomerAddrResponse> response = jdbcTemplate.query(cusAddressQuery, new Object[] { custId },
+				new CustomerAddrRowMapper());
 
 		return response;
 	}
